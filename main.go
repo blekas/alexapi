@@ -9,6 +9,7 @@ import (
 )
 //APIKEY: 11fb2fb3ff8c69d16e35c7450ec4cd62
 type ApiResponse struct {
+	// Define the fields to match the expected response structure from the external API
 	Message string `json:"message"`
 }
 
@@ -80,7 +81,7 @@ func forecastHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-  http.HandleFunc("/api/hello", helloHandler)
+  //http.HandleFunc("/api/hello", helloHandler)
 	http.HandleFunc("/api/weather", weatherHandler)
   //http.HandleFunc("/api/forecast", forecastHandler)
 	fmt.Println("Server is running on port 8080...")
