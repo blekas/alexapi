@@ -69,8 +69,8 @@ func genericHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
   http.HandleFunc("/api/hello", genericHandler)
-	http.HandleFunc("/weather/now", genericHandler)
-  http.HandleFunc("/weather/forecst", genericHandler)
+	http.HandleFunc("/api/weather/now", genericHandler)
+  http.HandleFunc("/api/weather/forecst", genericHandler)
 	fmt.Println("Server is running on port 8080...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
