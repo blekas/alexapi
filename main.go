@@ -25,14 +25,6 @@ func fetchExternalData(url string) ([]byte, error) {
 		return nil, err
 	}
 
-  // Unmarshal JSON if needed (optional)
-  var externalData ApiResponse
-  err = json.Unmarshal(body, &externalData)
-  if err != nil {
-    http.Error(w, "Failed to parse response", http.StatusInternalServerError)
-    return nil, err
-  }
-
 	return body, nil
 }
 
@@ -48,23 +40,31 @@ func genericHandler(w http.ResponseWriter, r *http.Request) {
   case "/weather/now":
   case "/weather/forecast":
 		// Handle /weather/now and /weather/forecast
+    url := "https://api.openweathermap.org/data/2.5/weather?lat=40.599&lon=22.951&appid=11fb2fb3ff8c69d16e35c7450ec4cd62"
     if (r.URL.Path == "/weather/forecast") {
-      url := "https://api.openweathermap.org/data/2.5/forecast?lat=40.599&lon=22.951&appid=11fb2fb3ff8c69d16e35c7450ec4cd62"
-    }
-    else {
-      url := "https://api.openweathermap.org/data/2.5/weather?lat=40.599&lon=22.951&appid=11fb2fb3ff8c69d16e35c7450ec4cd62"
+    //  url := "https://api.openweathermap.org/data/2.5/forecast?lat=40.599&lon=22.951&appid=11fb2fb3ff8c69d16e35c7450ec4cd62"
     }
     body, err := fetchExternalData(url)
 		if err != nil {
 			http.Error(w, "Failed to reach external API", http.StatusInternalServerError)
 			return
 		}
-  }
 
-  // Set response headers if needed and write the response body
-  w.Header().Set("Content-Type", "application/json")
-  w.WriteHeader(http.StatusOK)
-  w.Write(body) // Directly writes the response body
+    // Unmarshal JSON if needed (optional)
+    var externalData ApiResponse
+    err = json.Unmarshal(body, &externalData)
+    if err != nil {
+      http.Error(w, "Failed to parse response", http.StatusInternalServerError)
+      return
+    }
+
+    // Set response headers if needed and write the response body
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusOK)
+    w.Write(body) // Directly writes the response body
+  default:
+    http.NotFound(w, r)
+  }
 }
 
 func main() {
