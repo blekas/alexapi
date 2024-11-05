@@ -25,7 +25,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 
 func weatherHandler(w http.ResponseWriter, r *http.Request) {
   // Call the external API
-  resp, err := http.Get("https://api.openweathermap.org/data/3.0/onecall?lat=40.599&lon=22.951&appid=11fb2fb3ff8c69d16e35c7450ec4cd62")
+  resp, err := http.Get("https://api.openweathermap.org/data/2.5/weather?lat=40.599&lon=22.951&appid=11fb2fb3ff8c69d16e35c7450ec4cd62")
   if err != nil {
     http.Error(w, "Failed to reach external API", http.StatusInternalServerError)
     return
