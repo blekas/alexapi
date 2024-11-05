@@ -12,65 +12,77 @@ type ApiResponse struct {
 	Message string `json:"message"`
 }
 
-// Function to fetch data from the external API with dynamic endpoint
-func fetchExternalData(url string) ([]byte, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	return body, nil
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+  response := ApiResponse{Message: "Hello, world!! Welcome to my API :)"}
+  w.Header().Set("Content-Type", "application/json")
+  json.NewEncoder(w).Encode(response)
 }
 
-// Single handler for /api/hello, /weather/now, and /weather/forecast
-func genericHandler(w http.ResponseWriter, r *http.Request) {
-  switch r.URL.Path {
-  case "/api/hello":
-		// Handle /api/hello
-		response := ApiResponse{Message: "Hello, world!! This is my API :)"}
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(response)
 
-  case "/api/weather":
-  case "/api/forecast":
-		// Handle /weather/now and /weather/forecast
-    url := "https://api.openweathermap.org/data/2.5/weather?lat=40.599&lon=22.951&appid=11fb2fb3ff8c69d16e35c7450ec4cd62"
-    if (r.URL.Path == "/weather/forecast") {
-    //  url := "https://api.openweathermap.org/data/2.5/forecast?lat=40.599&lon=22.951&appid=11fb2fb3ff8c69d16e35c7450ec4cd62"
-    }
-    body, err := fetchExternalData(url)
-		if err != nil {
-			http.Error(w, "Failed to reach external API", http.StatusInternalServerError)
-			return
-		}
-
-    // Unmarshal JSON if needed (optional)
-    var externalData ApiResponse
-    err = json.Unmarshal(body, &externalData)
-    if err != nil {
-      http.Error(w, "Failed to parse response", http.StatusInternalServerError)
-      return
-    }
-
-    // Set response headers if needed and write the response body
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusOK)
-    w.Write(body) // Directly writes the response body
-  default:
-    http.NotFound(w, r)
+func weatherHandler(w http.ResponseWriter, r *http.Request) {
+  // Call the external API
+  resp, err := http.Get("https://api.openweathermap.org/data/2.5/weather?lat=40.599&lon=22.951&appid=11fb2fb3ff8c69d16e35c7450ec4cd62")
+  if err != nil {
+    http.Error(w, "Failed to reach external API", http.StatusInternalServerError)
+    return
   }
+  defer resp.Body.Close()
+
+  // Read the response body
+  body, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    http.Error(w, "Failed to read response", http.StatusInternalServerError)
+    return
+  }
+
+  // Unmarshal JSON if needed (optional)
+  var externalData ApiResponse
+  err = json.Unmarshal(body, &externalData)
+  if err != nil {
+    http.Error(w, "Failed to parse response", http.StatusInternalServerError)
+    return
+  }
+
+  // Set response headers if needed and write the response body
+  w.Header().Set("Content-Type", "application/json")
+  w.WriteHeader(http.StatusOK)
+  w.Write(body) // Directly writes the response body
+}
+
+func forecastHandler(w http.ResponseWriter, r *http.Request) {
+  // Call the external API
+  resp, err := http.Get("https://api.openweathermap.org/data/2.5/forecast?lat=40.599&lon=22.951&appid=11fb2fb3ff8c69d16e35c7450ec4cd62")
+  if err != nil {
+    http.Error(w, "Failed to reach external API", http.StatusInternalServerError)
+    return
+  }
+  defer resp.Body.Close()
+
+  // Read the response body
+  body, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    http.Error(w, "Failed to read response", http.StatusInternalServerError)
+    return
+  }
+
+  // Unmarshal JSON if needed (optional)
+  var externalData ApiResponse
+  err = json.Unmarshal(body, &externalData)
+  if err != nil {
+    http.Error(w, "Failed to parse response", http.StatusInternalServerError)
+    return
+  }
+
+  // Set response headers if needed and write the response body
+  w.Header().Set("Content-Type", "application/json")
+  w.WriteHeader(http.StatusOK)
+  w.Write(body) // Directly writes the response body
 }
 
 func main() {
-  http.HandleFunc("/api/hello", genericHandler)
-	http.HandleFunc("/api/weather", genericHandler)
-  http.HandleFunc("/api/forecst", genericHandler)
+  http.HandleFunc("/api/hello", helloHandler)
+	http.HandleFunc("/api/weather/now", weatherHandler)
+  http.HandleFunc("/api//weatherforecst", forecastHandler)
 	fmt.Println("Server is running on port 8080...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
