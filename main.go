@@ -60,6 +60,7 @@ func weatherHandler(w http.ResponseWriter, r *http.Request) {
 //}
 
 func main() {
+  http.HandleFunc("/api/hello", helloHandler)
 	http.HandleFunc("/api/weather", weatherHandler)
 	fmt.Println("Server is running on port 8080...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
