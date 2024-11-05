@@ -37,8 +37,8 @@ func genericHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
 
-  case "/weather/now":
-  case "/weather/forecast":
+  case "/api/weather":
+  case "/api/forecast":
 		// Handle /weather/now and /weather/forecast
     url := "https://api.openweathermap.org/data/2.5/weather?lat=40.599&lon=22.951&appid=11fb2fb3ff8c69d16e35c7450ec4cd62"
     if (r.URL.Path == "/weather/forecast") {
@@ -69,8 +69,8 @@ func genericHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
   http.HandleFunc("/api/hello", genericHandler)
-	http.HandleFunc("/api/weather/now", genericHandler)
-  http.HandleFunc("/api/weather/forecst", genericHandler)
+	http.HandleFunc("/api/weather", genericHandler)
+  http.HandleFunc("/api/forecst", genericHandler)
 	fmt.Println("Server is running on port 8080...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
