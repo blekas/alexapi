@@ -70,7 +70,8 @@ func forecastHandler(w http.ResponseWriter, r *http.Request) {
   var externalData ApiResponse
   err = json.Unmarshal(body, &externalData)
   if err != nil {
-    http.Error(w, "Failed to parse response", http.StatusInternalServerError)
+    //http.Error(w, "Failed to parse response", http.StatusInternalServerError)
+    http.Error(w, err, http.StatusInternalServerError)
     return
   }
 
